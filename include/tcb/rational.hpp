@@ -24,6 +24,10 @@
 #define TCB_CONSTEXPR14
 #endif
 
+#if __cpp_concepts >= 201500
+#define TCB_HAVE_CONCEPTS
+#endif
+
 namespace tcb {
 
 namespace detail {
@@ -285,7 +289,7 @@ struct rational_value_type<std::ratio<Num, Denom>> {
 template <typename T>
 using rational_value_t = typename detail::rational_value_type<T>::type;
 
-#if __cpp_concepts >= 201500
+#ifdef TCB_HAVE_CONCEPTS
 
 template <typename T>
 concept bool Rational()

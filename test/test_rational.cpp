@@ -838,25 +838,24 @@ TEST_CASE("is_rational type trait works")
     static_assert(!tcb::is_rational_v<tcb::rational<float>>, "");
 
     // Check concepts if supported
-#if  __cpp_concepts >= 201500
-    std::cout << __cpp_concepts << std::endl;
-    static_assert(tcb::Rational<int>, "");
-    static_assert(tcb::Rational<tcb::rational<int>>, "");
-    static_assert(tcb::Rational<std::kilo>, "");
-    static_assert(!tcb::Rational<float>, "");
-    static_assert(tcb::Rational<tcb::rational<float>>, "");
+#ifdef TCB_HAVE_CONCEPTS
+    static_assert(tcb::Rational<int>(), "");
+    static_assert(tcb::Rational<tcb::rational<int>>(), "");
+    static_assert(tcb::Rational<std::kilo>(), "");
+    static_assert(!tcb::Rational<float>(), "");
+    static_assert(!tcb::Rational<tcb::rational<float>>(), "");
 #endif
 }
 
 TEST_CASE("UDLs work as expected")
 {
 #ifdef TCB_HAVE_CONSTEXPR14
-	static_assert(3 / 10_rs == tcb::rational<unsigned short>{3, 10}, "");
-	static_assert(3 / 10_r == tcb::rational<int>{3, 10}, "");
+    static_assert(3 / 10_rs == tcb::rational<unsigned short>{3, 10}, "");
+    static_assert(3 / 10_r == tcb::rational<int>{3, 10}, "");
 #endif
 
-	REQUIRE(3 / 10_rs == tcb::rational<unsigned short>(3, 10));
-	REQUIRE(3 / 10_r == tcb::rational<int>(3, 10));
+    REQUIRE(3 / 10_rs == tcb::rational<unsigned short>(3, 10));
+    REQUIRE(3 / 10_r == tcb::rational<int>(3, 10));
 }
 
 TEST_CASE("Rationals can be printed")
@@ -890,8 +889,8 @@ TEST_CASE("Double conversion works as expected")
     constexpr auto r = 1/8_r;
     static_assert(r + 1.0 == 1.125, "");
 #endif
-	const auto r = 1 / 8_r;
-	REQUIRE(r + 1.0 == 1.125);
+    const auto r2 = 1 / 8_r;
+    REQUIRE(r2 + 1.0 == 1.125);
 
-	// TODO: More floating point tests
+    // TODO: More floating point tests
 }
