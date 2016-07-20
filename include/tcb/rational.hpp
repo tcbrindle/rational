@@ -315,7 +315,7 @@ constexpr T numerator(const rational<T>& r)
 template <std::intmax_t Num, std::intmax_t Denom>
 constexpr std::intmax_t numerator(std::ratio<Num, Denom>)
 {
-    return std::ratio<Num, Denom>::den;
+    return std::ratio<Num, Denom>::num;
 }
 
 template <typename T,
@@ -334,7 +334,7 @@ constexpr T denominator(const rational<T>& r)
 template <std::intmax_t Num, std::intmax_t Denom>
 constexpr std::intmax_t denominator(std::ratio<Num, Denom>)
 {
-    return std::ratio<Num, Denom>::num;
+    return std::ratio<Num, Denom>::den;
 }
 
 
