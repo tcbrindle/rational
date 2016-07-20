@@ -266,7 +266,7 @@ template <typename T, typename = void>
 struct rational_value_type {};
 
 template <typename T>
-struct rational_value_type<T, detail::void_t<std::is_integral<T>>> {
+struct rational_value_type<T, detail::void_t<std::enable_if_t<std::is_integral<T>::value>>> {
     using type = T;
 };
 
