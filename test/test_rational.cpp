@@ -44,9 +44,11 @@ void test_full_construction()
 {
     using rational = tcb::rational<T>;
 
+#ifdef TCB_HAVE_CONSTEXPR14
     constexpr rational r1{3, 2};
     static_assert(r1.num() == 3, "");
     static_assert(r1.denom() == 2, "");
+#endif
 
     const rational r2{3, 2};
     REQUIRE(r2.num() == 3);
@@ -58,15 +60,17 @@ void test_copy_construction()
 {
     using rational = tcb::rational<T>;
     
-    constexpr rational r1{3, 2};
-
-    {
+#ifdef TCB_HAVE_CONSTEXPR14
+	{
+		constexpr rational r1{3, 2};
         constexpr rational r2{r1};
         static_assert(r2.num() == r1.num(), "");
         static_assert(r2.denom() == r1.denom(), "");
     }
+#endif
 
     {
+		const rational r1{3, 2};
         const rational r2{r1};
         REQUIRE(r2.num() == r1.num());
         REQUIRE(r2.denom() == r1.denom());
@@ -78,9 +82,11 @@ void test_reduce_construction()
 {
     using rational = tcb::rational<T>;
 
+#ifdef TCB_HAVE_CONSTEXPR14
     constexpr rational r1{10, 100};
     static_assert(r1.num() == 1, "");
     static_assert(r1.denom() == 10, "");
+#endif
 
     const rational r2{10, 100};
     REQUIRE(r2.num() == 1);
@@ -115,6 +121,7 @@ void test_relops()
 {
     using rational = tcb::rational<T>;
     
+#ifdef TCB_HAVE_CONSTEXPR14
     {
         constexpr rational r1{-8, 17};
         constexpr rational r2{1, 2};
@@ -144,6 +151,7 @@ void test_relops()
         static_assert(r2 >= r1, "");
         static_assert(r3 >= r2, "");
     }
+#endif // CONSTEXPR14
 
     {
         const rational r1{8, 17};
@@ -181,6 +189,7 @@ void test_value_relops()
 {
     using rational = tcb::rational<T>;
 
+#ifdef TCB_HAVE_CONSTEXPR14
     {
         constexpr rational r{8, 2};
         constexpr T v1{4};
@@ -222,6 +231,7 @@ void test_value_relops()
         static_assert(!(r >= v2), "");
         static_assert(v2 >= r, "");
     }
+#endif
 
     {
         const rational r{8, 2};
@@ -271,6 +281,7 @@ void test_unary_arithmetic()
 {
     using rational = tcb::rational<T>;
     
+#ifdef TCB_HAVE_CONSTEXPR14
     {
         constexpr rational r1{1, 2};
         constexpr rational r2{-1, 2};
@@ -281,6 +292,7 @@ void test_unary_arithmetic()
         static_assert((-r1) == r2, "");
         static_assert((-r2) == r1, "");
     }
+#endif
 
     {
         const rational r1{1, 2};
@@ -299,12 +311,13 @@ void test_binary_arithmetic()
 {
     using rational1 = tcb::rational<T>;
     using rational2 = tcb::rational<U>;
-    
+  
+#ifdef TCB_HAVE_CONSTEXPR14
     {
         constexpr auto r1 = rational1{1, 5};
         constexpr auto r2 = rational2{1, 10};
         constexpr auto v = T{2};
-        
+  
         // Addition
         {
             constexpr auto res = r1 + r2;
@@ -365,6 +378,7 @@ void test_binary_arithmetic()
             static_assert(res3.denom() == 1, "");
         }
     }
+#endif
 
     {
         const auto r1 = rational1{1, 5};
@@ -446,7 +460,7 @@ void test_relational_assignment()
     // Can't do this at compile-time
     {
         rational1 r1{1, 5};
-        constexpr rational2 r2{1, 10};
+        const rational2 r2{1, 10};
         constexpr U v{2};
 
         r1 += r2;
@@ -460,7 +474,7 @@ void test_relational_assignment()
 
     {
         rational1 r1{1, 5};
-        constexpr rational2 r2{1, 10};
+        const rational2 r2{1, 10};
         constexpr U v{2};
 
         r1 -= r2;
@@ -474,7 +488,7 @@ void test_relational_assignment()
 
     {
         rational1 r1{1, 5};
-        constexpr rational2 r2{1, 10};
+        const rational2 r2{1, 10};
         constexpr U v{2};
 
         r1 *= r2;
@@ -488,7 +502,7 @@ void test_relational_assignment()
 
     {
         rational1 r1{1, 5};
-        constexpr rational2 r2{1, 10};
+        const rational2 r2{1, 10};
         constexpr U v{2};
 
         r1 /= r2;
@@ -684,6 +698,7 @@ TEST_CASE("Relational operators against values work as expected")
 TEST_CASE("Rationals of different types can be compared")
 {
     // Just pick some arbitrary types
+#ifdef TCB_HAVE_CONSTEXPR14
     constexpr auto r1 = tcb::rational<int>{1, 2};
     constexpr auto r2 = tcb::rational<unsigned long>{2, 4};
     constexpr auto r3 = tcb::rational<char>{static_cast<char>(17)};
@@ -697,6 +712,7 @@ TEST_CASE("Rationals of different types can be compared")
     static_assert(!(r2 != r1), "");
     static_assert(r2 != r3, "");
     static_assert(r3 != r2, "");
+#endif
     
     // TODO: Other relational operators, runtime tests
 }
@@ -834,9 +850,13 @@ TEST_CASE("is_rational type trait works")
 
 TEST_CASE("UDLs work as expected")
 {
-    static_assert(3/10_rs == tcb::rational<unsigned short>{3, 10}, "");
-    static_assert(3/10_r == tcb::rational<int>{3, 10}, "");
+#ifdef TCB_HAVE_CONSTEXPR14
+	static_assert(3 / 10_rs == tcb::rational<unsigned short>{3, 10}, "");
+	static_assert(3 / 10_r == tcb::rational<int>{3, 10}, "");
+#endif
 
+	REQUIRE(3 / 10_rs == tcb::rational<unsigned short>(3, 10));
+	REQUIRE(3 / 10_r == tcb::rational<int>(3, 10));
 }
 
 TEST_CASE("Rationals can be printed")
@@ -866,10 +886,12 @@ TEST_CASE("Rationals can be placed in containers")
 
 TEST_CASE("Double conversion works as expected")
 {
+#ifdef TCB_HAVE_CONSTEXPR14
     constexpr auto r = 1/8_r;
     static_assert(r + 1.0 == 1.125, "");
+#endif
+	const auto r = 1 / 8_r;
+	REQUIRE(r + 1.0 == 1.125);
 
-    // TODO: More floating point tests
-
-    auto r2 = tcb::rational<int>{-1, 10};
+	// TODO: More floating point tests
 }

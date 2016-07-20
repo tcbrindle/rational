@@ -14,7 +14,11 @@
 #include <iostream>
 #endif
 
-#if __cpp_constexpr >= 201304
+#if __cpp_constexpr > 201304
+#define TCB_HAVE_CONSTEXPR14
+#endif
+
+#ifdef TCB_HAVE_CONSTEXPR14
 #define TCB_CONSTEXPR14 constexpr
 #else
 #define TCB_CONSTEXPR14
