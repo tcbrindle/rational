@@ -11,4 +11,5 @@ endif()
 
 include_directories(include)
 
+add_subdirectory(example)
 add_subdirectory(test)
