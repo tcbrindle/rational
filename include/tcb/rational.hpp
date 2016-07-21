@@ -72,6 +72,8 @@ constexpr bool is_nonnarrowing_assignable_v = is_nonnarrowing_assignable<T, U>::
 
 } // end namespace detail
 
+/// Basic class template for a rational type
+/// \requires `std::is_integral<T>::value` is `true`
 template <typename T>
 class rational {
 public:
@@ -82,21 +84,33 @@ public:
 
     /* Construction */
 
+    /// Default-constructs a rational
+    /// \effects this->num() == 0, this->denom() == 1
     constexpr rational() = default;
 
+    /// Constructs a rational from a value
+    /// \requires Assignment from `U` to `T` is non-narrowing
+    /// \effects this->num() == value, this->denom() == 1
     template <typename U, typename = std::enable_if_t<std::is_integral<U>::value>>
     constexpr rational(U num)
         : num_(num)
     {}
 
+    /// Constructs a rational from the given numerator an denominator
+    /// \effects this->num() == num, this->denom() == denom
+    /// \requires `denom` is not equal to zero
     TCB_CONSTEXPR14 rational(value_type num, value_type denom)
         : num_{num}, denom_{denom}
     {
         simplify();
     }
 
+    /// Defaulted copy construction
     constexpr rational(const rational&) = default;
 
+    /// Copy-constructs a rational<T> from rational<U>
+    /// \requires Assignment from `T` to `U` is non-narrowing
+    /// \effects this->num() == other.num(), this->denom() == other.denom()
     template <typename U,
               typename = std::enable_if_t<detail::is_nonnarrowing_assignable_v<T, U>>>
     constexpr rational(const rational<U>& other)
@@ -105,8 +119,12 @@ public:
 
     /* Assignment */
 
+    /// Defaulted copy-assignment
     constexpr rational& operator=(const rational&) = default;
 
+    /// Copy-assigns a from rational of a different type
+    /// \requires Assignment from `T` to `U` is non-narrowing
+    /// \effects this->num() == other.num(), this->denom() == other.denom()
     template <typename U,
               typename = std::enable_if_t<detail::is_nonnarrowing_assignable_v<T, U>>>
     TCB_CONSTEXPR14 rational& operator=(const rational<U>& other)
@@ -116,6 +134,7 @@ public:
         return *this;
     }
 
+    /// \effects Swaps the values of `this` and `other`
     TCB_CONSTEXPR14 void swap(rational& other)
     {
         using std::swap;
@@ -125,6 +144,7 @@ public:
 
     /* Member access */
 
+    /// \returns The value of the numerator of the rational
     constexpr value_type num() const { return num_; }
 
     constexpr value_type denom() const { return denom_; }
@@ -342,6 +362,8 @@ constexpr std::intmax_t denominator(std::ratio<Num, Denom>)
  */
 
 // Equality
+/// \returns `true` if `lhs` and `rhs` are equal
+/// \requires `T` and `U` are models of `Rational`
 template <typename T, typename U,
           typename = std::enable_if_t<is_rational_v<T> && is_rational_v<U>>>
 constexpr bool operator==(const T& lhs, const U& rhs)
