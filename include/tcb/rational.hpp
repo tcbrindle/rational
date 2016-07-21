@@ -371,7 +371,7 @@ template <typename T, typename U,
           typename = std::enable_if_t<is_rational_v<T> && is_rational_v<U>>>
 constexpr bool operator>(const T& lhs, const U& rhs)
 {
-    return numerator(lhs) * denominator(rhs) > numerator(rhs) * denominator(lhs);
+    return rhs < lhs;
 }
 
 // less than or equal
