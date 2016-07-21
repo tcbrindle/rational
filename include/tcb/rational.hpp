@@ -475,9 +475,10 @@ struct rational_literal_proxy {
     T value;
 };
 
-template <typename T, typename U>
+template <typename T, typename U,
+          typename = std::enable_if_t<std::is_integral<T>::value>>
 constexpr rational<U>
-operator/(T t, detail::rational_literal_proxy<U> p)
+operator/(T t, rational_literal_proxy<U> p)
 {
     return rational<U>(t, p.value);
 }
