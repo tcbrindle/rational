@@ -105,18 +105,18 @@ public:
 
     /* Assignment */
 
-    rational& operator=(const rational&) = default;
+    constexpr rational& operator=(const rational&) = default;
 
     template <typename U,
               typename = std::enable_if_t<detail::is_nonnarrowing_assignable_v<T, U>>>
-    rational& operator=(const rational<U>& other)
+    TCB_CONSTEXPR14 rational& operator=(const rational<U>& other)
     {
         num_ = value_type{other.num()};
         denom_ = value_type{other.denom()};
         return *this;
     }
 
-    void swap(rational& other)
+    TCB_CONSTEXPR14 void swap(rational& other)
     {
         using std::swap;
         swap(num_, other.num_);
@@ -132,7 +132,7 @@ public:
     /* Compound assignment */
 
     template <typename U>
-    rational& operator+=(const rational<U>& other)
+    TCB_CONSTEXPR14 rational& operator+=(const rational<U>& other)
     {
         num_ *= other.denom();
         num_ += denom_ * other.num();
@@ -143,13 +143,13 @@ public:
 
     template <typename U,
               typename = std::enable_if_t<std::is_integral<U>::value>>
-    rational& operator+=(U other)
+    TCB_CONSTEXPR14 rational& operator+=(U other)
     {
         return *this += rational<U>{other};
     }
 
     template <typename U>
-    rational& operator-=(const rational<U>& other)
+    TCB_CONSTEXPR14 rational& operator-=(const rational<U>& other)
     {
         num_ *= other.denom();
         num_ -= denom_ * other.num();
@@ -159,13 +159,13 @@ public:
     }
 
     template <typename U>
-    rational& operator-=(U other)
+    TCB_CONSTEXPR14 rational& operator-=(U other)
     {
         return *this -= rational<U>{other};
     }
 
     template <typename U>
-    rational& operator*=(const rational<U>& other)
+    TCB_CONSTEXPR14 rational& operator*=(const rational<U>& other)
     {
         num_ *= other.num();
         denom_ *= other.denom();
@@ -174,13 +174,13 @@ public:
     }
 
     template <typename U>
-    rational& operator*=(U other)
+    TCB_CONSTEXPR14 rational& operator*=(U other)
     {
         return *this *= rational<U>{other};
     }
 
     template <typename U>
-    rational& operator/=(const rational<U>& other)
+    TCB_CONSTEXPR14 rational& operator/=(const rational<U>& other)
     {
         num_ *= other.denom();
         denom_ *= other.num();
@@ -189,7 +189,7 @@ public:
     }
 
     template <typename U>
-    rational& operator/=(U other)
+    TCB_CONSTEXPR14 rational& operator/=(U other)
     {
         return *this /= rational<U>{other};
     }
