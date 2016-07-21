@@ -75,7 +75,8 @@ int main()
     // conversion would be narrowing then we need to explicitly static_cast:
     constexpr rational<long> r8 = r5; // assignment of int to long, fine
     // constexpr rational<int> r9 = r8; // assignment of long to int, error
-    constexpr rational<long> r9 = static_cast<rational<long>>(r8); // Okay
+    constexpr rational<int> r9 = static_cast<tcb::rational<int>>(r8); // Okay
+
 
     // Mathematically, the rational numbers are a subset of the reals. It's
     // pretty hard to represent a real number on a computer, but IEEE floating
@@ -98,7 +99,7 @@ int main()
 
     // We also provide overloads so that the std::ratio class becomes a model
     // of Rational. That means that it's legal to do daft things like this:
-    static_assert(std::kilo{} * 1/10_r == 100);
+    static_assert(std::kilo{} * (1/10_r) == 100, "");
     // Whether or not this is a good idea is left to your discretion.
 
     // You can test whether something matches the Rational concept using
@@ -111,14 +112,14 @@ int main()
     // If you're really fancy and using a recent GCC, we provide a real
     // Concept which wraps the is_rational<T> test:
 #ifdef TCB_HAVE_CONCEPTS
-    static_assert(Rational<decltype(1/10_r>(), "");
+    static_assert(Rational<decltype(1/10_r)>(), "");
 #endif
 
     // Lastly, we provide an output stream function to print rationals:
     std::cout << 22/7_r << " is nearly pi!\n";
 
     // If you don't want to #include <iostream> when including rational.hpp,
-    // just define the symbol TCB_RATIONAL_NO_IOSTREAM beforehand. We'll get
+    // just define the symbol TCB_RATIONAL_NO_IOSTREAMS beforehand. We'll get
     // the message.
 
     // That about wraps it up. I hope you find rational.hpp useful. If you have
