@@ -73,9 +73,9 @@ int main()
 
     // We can convert between rationals of different types, but if such a
     // conversion would be narrowing then we need to explicitly static_cast:
-    constexpr rational<long> r8 = r5; // assignment of int to long, fine
-    // constexpr rational<int> r9 = r8; // assignment of long to int, error
-    constexpr rational<int> r9 = static_cast<tcb::rational<int>>(r8); // Okay
+    constexpr rational<int64_t> r8 = 1/10_r32; // assignment of int32 to int64, fine
+    // constexpr rational<int32_t> r9 = r8; // assignment of int64 to int32, error
+    constexpr rational<int32_t> r9 = static_cast<rational<int32_t>>(r8); // Okay
 
 
     // Mathematically, the rational numbers are a subset of the reals. It's
