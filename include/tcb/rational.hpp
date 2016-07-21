@@ -67,6 +67,9 @@ template <typename T, typename U>
 struct is_nonnarrowing_assignable<T, U, void_t<decltype(T{std::declval<U>()})>>
     : std::true_type{};
 
+template <typename T, typename U>
+constexpr bool is_nonnarrowing_assignable_v = is_nonnarrowing_assignable<T, U>::value;
+
 } // end namespace detail
 
 template <typename T>
@@ -81,8 +84,9 @@ public:
 
     constexpr rational() = default;
 
-    constexpr rational(value_type num)
-        : num_{num}
+    template <typename U, typename = std::enable_if_t<std::is_integral<U>::value>>
+    constexpr rational(U num)
+        : num_(num)
     {}
 
     TCB_CONSTEXPR14 rational(value_type num, value_type denom)
@@ -93,29 +97,20 @@ public:
 
     constexpr rational(const rational&) = default;
 
-    template <typename U>
+    template <typename U,
+              typename = std::enable_if_t<detail::is_nonnarrowing_assignable_v<T, U>>>
     constexpr rational(const rational<U>& other)
-            : num_{other.num()}, denom_(other.denom())
-    {
-        static_assert(detail::is_nonnarrowing_assignable<T, U>::value,
-                      "Cannot perform narrowing construction "
-                      "rational<T> r = rational<U>{}. "
-                      "Use an explicit static_cast, i.e. "
-                      "rational<T> r = static_cast<rational<T>>(u)");
-    }
+            : num_(other.num()), denom_(other.denom())
+    {}
 
     /* Assignment */
 
     rational& operator=(const rational&) = default;
 
-    template <typename U>
+    template <typename U,
+              typename = std::enable_if_t<detail::is_nonnarrowing_assignable_v<T, U>>>
     rational& operator=(const rational<U>& other)
     {
-        static_assert(detail::is_nonnarrowing_assignable<T, U>::value,
-                      "Cannot perform narrowing assignment "
-                      "rational<T> r = rational<U>{}. "
-                      "Use an explicit static_cast, i.e. "
-                      "rational<T> r = static_cast<rational<T>>(u)");
         num_ = value_type{other.num()};
         denom_ = value_type{other.denom()};
         return *this;
