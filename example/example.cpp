@@ -52,7 +52,7 @@ int main()
 
     // As the above demonstrates, we can also use the standard logic operators
     // on rationals, for example:
-    static_assert(rational<int>{8/17} < rational<int>{1, 2}, "");
+    static_assert(rational<int>{8, 17} < rational<int>{1, 2}, "");
 
     // Writing rational<int> all the time is getting tedious. Fortunately,
     // we have user-defined literals available to make life easier. These
